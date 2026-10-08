@@ -9,7 +9,10 @@ import java.util.Objects;
 
 /**
  * Evaluator that checks if the length of the actual output falls within an inclusive
- * {@code [minimumOutputLength, maximumOutputLength]} range, measured in characters.
+ * {@code [minimumOutputLength, maximumOutputLength]} range.
+ *
+ * <p>Length is measured in Unicode code points rather than UTF-16 {@code char} units, so a
+ * supplementary character such as an emoji counts as one, not two.
  */
 public class LengthEvaluator extends BaseEvaluator {
     private final int maximumOutputLength;
@@ -28,7 +31,7 @@ public class LengthEvaluator extends BaseEvaluator {
     @Override
     protected EvalResult runEvaluation(EvalTestCase testCase) {
         String actualOutput = Objects.requireNonNull(testCase.actualOutput(), "`actualOutput` cannot be null");
-        int actualOutputLength = actualOutput.length();
+        int actualOutputLength = actualOutput.codePointCount(0, actualOutput.length());
 
         double score;
         String reason;
@@ -98,7 +101,7 @@ public class LengthEvaluator extends BaseEvaluator {
         /**
          * Sets the maximum allowed output length (inclusive). Required.
          *
-         * @param maximumOutputLength the maximum length in characters, at least 1
+         * @param maximumOutputLength the maximum length in code points, at least 1
          * @return this builder
          */
         public Builder maximumOutputLength(int maximumOutputLength) {
@@ -109,7 +112,7 @@ public class LengthEvaluator extends BaseEvaluator {
         /**
          * Sets the minimum allowed output length (inclusive). Defaults to 0.
          *
-         * @param minimumOutputLength the minimum length in characters, at least 0
+         * @param minimumOutputLength the minimum length in code points, at least 0
          * @return this builder
          */
         public Builder minimumOutputLength(int minimumOutputLength) {
@@ -121,8 +124,10 @@ public class LengthEvaluator extends BaseEvaluator {
          * Builds the evaluator.
          *
          * @return a new length evaluator
-         * @throws IllegalStateException if the maximum length is missing or less than 1, the minimum length is
-         *     negative, or the minimum length exceeds the maximum length
+         * @throws IllegalStateException if the maximum length is missing or less than
+         *                               1, the minimum length is
+         *                               negative, or the minimum length exceeds the
+         *                               maximum length
          */
         public LengthEvaluator build() {
             if (maximumOutputLength == null || maximumOutputLength < 1) {
