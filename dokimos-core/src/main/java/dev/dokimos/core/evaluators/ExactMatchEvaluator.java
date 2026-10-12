@@ -11,18 +11,18 @@ import java.util.Objects;
  * Evaluator that checks for exact string match between actual and expected outputs.
  *
  * <p>By default the comparison is strict. It can optionally ignore leading and trailing
- * whitespace ({@link Builder#trimWhiteSpace(boolean)}) and letter case
+ * whitespace ({@link Builder#trimWhitespace(boolean)}) and letter case
  * ({@link Builder#ignoreCase(boolean)}).
  */
 public class ExactMatchEvaluator extends BaseEvaluator {
 
     private final boolean ignoreCase;
-    private final boolean trimWhiteSpace;
+    private final boolean trimWhitespace;
 
     private ExactMatchEvaluator(Builder builder) {
         super(builder.name, builder.threshold, builder.evaluationParams);
         this.ignoreCase = builder.ignoreCase;
-        this.trimWhiteSpace = builder.trimWhiteSpace;
+        this.trimWhitespace = builder.trimWhitespace;
     }
 
     /**
@@ -41,9 +41,9 @@ public class ExactMatchEvaluator extends BaseEvaluator {
         String expectedOutput = testCase.expectedOutput();
         String actualOutput = testCase.actualOutput();
 
-        if (trimWhiteSpace) {
-            expectedOutput = expectedOutput == null ? null : expectedOutput.trim();
-            actualOutput = actualOutput == null ? null : actualOutput.trim();
+        if (trimWhitespace) {
+            expectedOutput = expectedOutput == null ? null : expectedOutput.strip();
+            actualOutput = actualOutput == null ? null : actualOutput.strip();
         }
 
         boolean matches = ignoreCase && expectedOutput != null
@@ -75,7 +75,7 @@ public class ExactMatchEvaluator extends BaseEvaluator {
         private double threshold = 1.0;
         private List<EvalTestCaseParam> evaluationParams =
                 List.of(EvalTestCaseParam.ACTUAL_OUTPUT, EvalTestCaseParam.EXPECTED_OUTPUT);
-        private boolean trimWhiteSpace = false;
+        private boolean trimWhitespace = false;
         private boolean ignoreCase = false;
 
         /**
@@ -113,14 +113,15 @@ public class ExactMatchEvaluator extends BaseEvaluator {
 
         /**
          * Sets whether leading and trailing whitespace is removed from both the actual and
-         * expected outputs before comparing them. Whitespace inside the strings is preserved.
+         * expected outputs before comparing them using {@link String#strip()}.
+         * Whitespace inside the strings is preserved.
          * Defaults to {@code false}.
          *
-         * @param trimWhiteSpace {@code true} to trim both outputs before comparison
+         * @param trimWhitespace {@code true} to trim both outputs before comparison
          * @return this builder
          */
-        public Builder trimWhiteSpace(boolean trimWhiteSpace) {
-            this.trimWhiteSpace = trimWhiteSpace;
+        public Builder trimWhitespace(boolean trimWhitespace) {
+            this.trimWhitespace = trimWhitespace;
             return this;
         }
 

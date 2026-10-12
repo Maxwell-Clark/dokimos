@@ -126,7 +126,7 @@ class ExactMatchEvaluatorTest {
 
     @Test
     void shouldMatchAfterTrimmingActualOutputWhenEnabled() {
-        var evaluator = ExactMatchEvaluator.builder().trimWhiteSpace(true).build();
+        var evaluator = ExactMatchEvaluator.builder().trimWhitespace(true).build();
 
         var testCase = EvalTestCase.builder()
                 .actualOutput("  Paris\n\t")
@@ -141,7 +141,7 @@ class ExactMatchEvaluatorTest {
 
     @Test
     void shouldTrimExpectedOutputToo() {
-        var evaluator = ExactMatchEvaluator.builder().trimWhiteSpace(true).build();
+        var evaluator = ExactMatchEvaluator.builder().trimWhitespace(true).build();
 
         var testCase = EvalTestCase.builder()
                 .actualOutput("Paris")
@@ -153,7 +153,7 @@ class ExactMatchEvaluatorTest {
 
     @Test
     void shouldPreserveInnerWhitespaceWhenTrimming() {
-        var evaluator = ExactMatchEvaluator.builder().trimWhiteSpace(true).build();
+        var evaluator = ExactMatchEvaluator.builder().trimWhitespace(true).build();
 
         var testCase = EvalTestCase.builder()
                 .actualOutput("New  York")
@@ -165,7 +165,7 @@ class ExactMatchEvaluatorTest {
 
     @Test
     void shouldNotIgnoreCaseWhenOnlyTrimming() {
-        var evaluator = ExactMatchEvaluator.builder().trimWhiteSpace(true).build();
+        var evaluator = ExactMatchEvaluator.builder().trimWhitespace(true).build();
 
         var testCase = EvalTestCase.builder()
                 .actualOutput(" PARIS ")
@@ -178,7 +178,7 @@ class ExactMatchEvaluatorTest {
     @Test
     void shouldCombineTrimAndIgnoreCase() {
         var evaluator = ExactMatchEvaluator.builder()
-                .trimWhiteSpace(true)
+                .trimWhitespace(true)
                 .ignoreCase(true)
                 .build();
 
@@ -196,9 +196,9 @@ class ExactMatchEvaluatorTest {
     @Test
     void shouldAllowDisablingFlagsAgain() {
         var evaluator = ExactMatchEvaluator.builder()
-                .trimWhiteSpace(true)
+                .trimWhitespace(true)
                 .ignoreCase(true)
-                .trimWhiteSpace(false)
+                .trimWhitespace(false)
                 .ignoreCase(false)
                 .build();
 
@@ -214,12 +214,27 @@ class ExactMatchEvaluatorTest {
     void shouldNotThrowOnMissingExpectedOutputWhenNotRequired() {
         var evaluator = ExactMatchEvaluator.builder()
                 .evaluationParams(List.of(EvalTestCaseParam.ACTUAL_OUTPUT))
-                .trimWhiteSpace(true)
+                .trimWhitespace(true)
                 .ignoreCase(true)
                 .build();
 
         var testCase = EvalTestCase.builder().actualOutput("Paris").build();
 
         assertThat(evaluator.evaluate(testCase).score()).isEqualTo(0.0);
+    }
+
+    @Test
+    void shouldTrimUnicodeWhitespaceFromBothOutputs() {
+        var evaluator = ExactMatchEvaluator.builder().trimWhitespace(true).build();
+
+        var testCase = EvalTestCase.builder()
+                .actualOutput("\u2003Paris\u2003")
+                .expectedOutput("\u2002Paris\u2002")
+                .build();
+
+        var result = evaluator.evaluate(testCase);
+
+        assertThat(result.score()).isEqualTo(1.0);
+        assertThat(result.success()).isTrue();
     }
 }
