@@ -24,6 +24,11 @@ public class LengthEvaluator extends BaseEvaluator {
         this.minimumOutputLength = builder.minimumOutputLength;
     }
 
+    /**
+     * Creates a new builder for constructing length evaluators.
+     *
+     * @return a new builder
+     */
     public static Builder builder() {
         return new Builder();
     }
