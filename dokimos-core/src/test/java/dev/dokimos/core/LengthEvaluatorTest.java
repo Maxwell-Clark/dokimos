@@ -14,7 +14,8 @@ class LengthEvaluatorTest {
                 .maximumOutputLength(10)
                 .build();
 
-        var result = evaluator.evaluate(EvalTestCase.builder().actualOutput("hello").build());
+        var result =
+                evaluator.evaluate(EvalTestCase.builder().actualOutput("hello").build());
 
         assertThat(result.score()).isEqualTo(1.0);
         assertThat(result.success()).isTrue();
@@ -28,7 +29,8 @@ class LengthEvaluatorTest {
                 .maximumOutputLength(20)
                 .build();
 
-        var result = evaluator.evaluate(EvalTestCase.builder().actualOutput("short").build());
+        var result =
+                evaluator.evaluate(EvalTestCase.builder().actualOutput("short").build());
 
         assertThat(result.score()).isEqualTo(0.0);
         assertThat(result.success()).isFalse();
@@ -55,24 +57,24 @@ class LengthEvaluatorTest {
                 .build();
 
         assertThat(evaluator
-                .evaluate(EvalTestCase.builder().actualOutput("12345").build())
-                .score())
+                        .evaluate(EvalTestCase.builder().actualOutput("12345").build())
+                        .score())
                 .isEqualTo(1.0);
         assertThat(evaluator
-                .evaluate(EvalTestCase.builder()
-                        .actualOutput("1234567890")
-                        .build())
-                .score())
+                        .evaluate(EvalTestCase.builder()
+                                .actualOutput("1234567890")
+                                .build())
+                        .score())
                 .isEqualTo(1.0);
         assertThat(evaluator
-                .evaluate(EvalTestCase.builder().actualOutput("1234").build())
-                .score())
+                        .evaluate(EvalTestCase.builder().actualOutput("1234").build())
+                        .score())
                 .isEqualTo(0.0);
         assertThat(evaluator
-                .evaluate(EvalTestCase.builder()
-                        .actualOutput("12345678901")
-                        .build())
-                .score())
+                        .evaluate(EvalTestCase.builder()
+                                .actualOutput("12345678901")
+                                .build())
+                        .score())
                 .isEqualTo(0.0);
     }
 
@@ -90,7 +92,8 @@ class LengthEvaluatorTest {
     void shouldNotRequireExpectedOutput() {
         var evaluator = LengthEvaluator.builder().maximumOutputLength(100).build();
 
-        var testCase = EvalTestCase.builder().actualOutput("no expected output here").build();
+        var testCase =
+                EvalTestCase.builder().actualOutput("no expected output here").build();
 
         assertThatCode(() -> evaluator.evaluate(testCase)).doesNotThrowAnyException();
     }
@@ -111,7 +114,8 @@ class LengthEvaluatorTest {
                 .maximumOutputLength(280)
                 .build();
 
-        var result = evaluator.evaluate(EvalTestCase.builder().actualOutput("hi").build());
+        var result =
+                evaluator.evaluate(EvalTestCase.builder().actualOutput("hi").build());
 
         assertThat(result.name()).isEqualTo("Tweet Length");
         assertThat(result.threshold()).isEqualTo(0.5);
@@ -127,16 +131,16 @@ class LengthEvaluatorTest {
     @Test
     void shouldThrowWhenMaximumIsLessThanOne() {
         assertThatThrownBy(
-                () -> LengthEvaluator.builder().maximumOutputLength(0).build())
+                        () -> LengthEvaluator.builder().maximumOutputLength(0).build())
                 .isInstanceOf(IllegalStateException.class);
     }
 
     @Test
     void shouldThrowWhenMinimumIsNegative() {
         assertThatThrownBy(() -> LengthEvaluator.builder()
-                .minimumOutputLength(-1)
-                .maximumOutputLength(10)
-                .build())
+                        .minimumOutputLength(-1)
+                        .maximumOutputLength(10)
+                        .build())
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("negative");
     }
@@ -144,9 +148,9 @@ class LengthEvaluatorTest {
     @Test
     void shouldThrowWhenMinimumExceedsMaximum() {
         assertThatThrownBy(() -> LengthEvaluator.builder()
-                .minimumOutputLength(20)
-                .maximumOutputLength(10)
-                .build())
+                        .minimumOutputLength(20)
+                        .maximumOutputLength(10)
+                        .build())
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("cannot be greater than");
     }
@@ -159,12 +163,12 @@ class LengthEvaluatorTest {
                 .build();
 
         assertThat(evaluator
-                .evaluate(EvalTestCase.builder().actualOutput("abc").build())
-                .score())
+                        .evaluate(EvalTestCase.builder().actualOutput("abc").build())
+                        .score())
                 .isEqualTo(1.0);
         assertThat(evaluator
-                .evaluate(EvalTestCase.builder().actualOutput("abcd").build())
-                .score())
+                        .evaluate(EvalTestCase.builder().actualOutput("abcd").build())
+                        .score())
                 .isEqualTo(0.0);
     }
 
@@ -172,7 +176,8 @@ class LengthEvaluatorTest {
     void shouldCountCodePointsNotUtf16Units() {
         var evaluator = LengthEvaluator.builder().maximumOutputLength(1).build();
 
-        var result = evaluator.evaluate(EvalTestCase.builder().actualOutput("😀").build());
+        var result =
+                evaluator.evaluate(EvalTestCase.builder().actualOutput("😀").build());
 
         assertThat(result.score()).isEqualTo(1.0);
         assertThat(result.success()).isTrue();
